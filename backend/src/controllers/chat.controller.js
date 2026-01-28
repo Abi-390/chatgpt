@@ -4,7 +4,7 @@ async function createChat(req, res) {
   const { title } = req.body;
 
   const chat = await chatModel.create({
-    user: user._id,
+    user: req.user,
     title,
   });
 
@@ -12,7 +12,8 @@ async function createChat(req, res) {
     message:"Chat created successfully", chat:{
         _id : chat._id,
         title : chat.title,
-        lastActivity : chat.lastActivity
+        lastActivity : chat.lastActivity,
+        user:chat.user
     }
   })
 }
