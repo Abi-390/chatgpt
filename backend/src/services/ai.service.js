@@ -2,7 +2,7 @@ const {GoogleGenAI} = require("@google/genai")
 
 
 
-const ai = new GoogleGenAI();
+const ai = new GoogleGenAI({});
 
 async function generateResponse(content) {
     const response = await ai.models.generateContent({
