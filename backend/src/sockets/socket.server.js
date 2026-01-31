@@ -43,6 +43,7 @@ function initSocketServer(httpServer) {
         })
 
        const response = await aiService.generateResponse(messagePayload.content);
+       console.log("AI response:", response)
 
         await messageModel.create({
             chat : messagePayload.chat,
