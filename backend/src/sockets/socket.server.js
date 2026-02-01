@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
 const aiService = require("../services/ai.service");
 const messageModel = require("../models/message.model");
+const mongoose = require("mongoose");
 
 function initSocketServer(httpServer) {
   const io = new Server(httpServer, {});
@@ -45,9 +46,14 @@ function initSocketServer(httpServer) {
         chat: messagePayload.chat,
       });
 
-      console.log("Chat history:", chatHistory);
-
-      const response = await aiService.generateResponse(messagePayload.content);
+      const response = await aiService.generateResponse(
+        chatHistory.map((item) => {
+          return {
+            role: item.role,
+            parts: [{ text: item.content }],
+          };
+        }),
+      );
       console.log("AI response:", response);
 
       await messageModel.create({
