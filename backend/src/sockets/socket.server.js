@@ -79,6 +79,18 @@ function initSocketServer(httpServer) {
         role: "model",
       });
 
+      const responseVectors = await aiService.generateVector(response);
+
+      await createMemory({
+        vectors : responseVectors,
+        messageId : uuidv4(),
+         metadata: {
+          chat: messagePayload.chat,
+          user: socket.user._id,
+        },
+
+      })
+
       socket.emit("ai-response", {
         content: response,
         chat: messagePayload.chat,
