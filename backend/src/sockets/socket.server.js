@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
 const aiService = require("../services/ai.service");
 const messageModel = require("../models/message.model");
+const {createMemory,queryMemory} = require("../services/vector.service")
 
 
 function initSocketServer(httpServer) {
@@ -42,9 +43,12 @@ function initSocketServer(httpServer) {
         role: "user",
       });
 
+      const vectors = await aiService.generateVector(messagePayload.content);
+      console.log("Vectors generated:",vectors)
+
       const chatHistory = await messageModel.find({
         chat: messagePayload.chat,
-      }).sort({createdAt : -1}).limit(10).lean().reverse();
+      }).sort({createdAt : -1}).limit(10).lean();
 
       const response = await aiService.generateResponse(
         chatHistory.map((item) => {
