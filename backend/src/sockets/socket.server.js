@@ -45,14 +45,26 @@ function initSocketServer(httpServer) {
 
       const vectors = await aiService.generateVector(messagePayload.content);
 
+      const memory = await queryMemory({
+        queryVector : vectors[0].values,
+        limit : 3,
+        metadata : {
+             user: socket.user._id.toString(),
+        }
+      })
+
       await createMemory({
         vectors,
         messageId: uuidv4(),
         metadata: {
           chat: messagePayload.chat,
           user: socket.user._id,
+          text : messagePayload.content
         },
       });
+
+      
+      console.log(memory)
 
       const chatHistory = await messageModel
         .find({
@@ -87,6 +99,7 @@ function initSocketServer(httpServer) {
          metadata: {
           chat: messagePayload.chat,
           user: socket.user._id,
+          text : response
         },
 
       })
