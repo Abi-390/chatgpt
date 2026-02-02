@@ -46,12 +46,12 @@ function initSocketServer(httpServer) {
       const vectors = await aiService.generateVector(messagePayload.content);
 
       const memory = await queryMemory({
-        queryVector : vectors[0].values,
-        limit : 3,
-        metadata : {
-             user: socket.user._id.toString(),
-        }
-      })
+        queryVector: vectors[0].values,
+        limit: 3,
+        metadata: {
+          user: socket.user._id.toString(),
+        },
+      });
 
       await createMemory({
         vectors,
@@ -59,12 +59,11 @@ function initSocketServer(httpServer) {
         metadata: {
           chat: messagePayload.chat,
           user: socket.user._id,
-          text : messagePayload.content
+          text: messagePayload.content,
         },
       });
 
-      
-      console.log(memory)
+      console.log(memory);
 
       const chatHistory = await messageModel
         .find({
@@ -74,14 +73,32 @@ function initSocketServer(httpServer) {
         .limit(10)
         .lean();
 
-      const response = await aiService.generateResponse(
-        chatHistory.map((item) => {
-          return {
-            role: item.role,
-            parts: [{ text: item.content }],
-          };
-        }),
-      );
+      const stm = chatHistory.reverse().map((item) => {
+        return {
+          role: item.role,
+          parts: [{ text: item.content }],
+        };
+      });
+
+      const ltm = [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `You are an AI assistant with access to long-term memory.
+                        The following messages are IMPORTANT past conversation context.
+                        You MUST use them when relevant.
+
+                            Past conversation memory:
+                ${memory.map((item) => item.metadata.text).join("\n")}`,
+            },
+          ],
+        },
+      ];
+
+      console.log([...ltm, ...stm]);
+
+      const response = await aiService.generateResponse([...ltm, ...stm]);
       console.log("AI response:", response);
 
       await messageModel.create({
@@ -94,15 +111,14 @@ function initSocketServer(httpServer) {
       const responseVectors = await aiService.generateVector(response);
 
       await createMemory({
-        vectors : responseVectors,
-        messageId : uuidv4(),
-         metadata: {
+        vectors: responseVectors,
+        messageId: uuidv4(),
+        metadata: {
           chat: messagePayload.chat,
           user: socket.user._id,
-          text : response
+          text: response,
         },
-
-      })
+      });
 
       socket.emit("ai-response", {
         content: response,
