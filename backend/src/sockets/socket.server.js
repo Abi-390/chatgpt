@@ -48,7 +48,7 @@ function initSocketServer(httpServer) {
       const memory = await queryMemory({
         queryVector: vectors[0].values,
         limit: 3,
-        /*metadata: {
+       /* metadata: {
           user: socket.user._id.toString(),
         },*/
       });
@@ -115,7 +115,7 @@ function initSocketServer(httpServer) {
         vectors: responseVectors,
         messageId: uuidv4(),
         metadata: {
-          chat: messagePayload.chat.toString(),
+          chat: messagePayload.chat.toString,
           user: socket.user._id.toString(),
           text: response,
         },
