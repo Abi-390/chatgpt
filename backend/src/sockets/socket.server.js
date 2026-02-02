@@ -48,17 +48,17 @@ function initSocketServer(httpServer) {
       const memory = await queryMemory({
         queryVector: vectors[0].values,
         limit: 3,
-        metadata: {
+        /*metadata: {
           user: socket.user._id.toString(),
-        },
+        },*/
       });
 
       await createMemory({
         vectors,
         messageId: uuidv4(),
         metadata: {
-          chat: messagePayload.chat,
-          user: socket.user._id,
+          chat: messagePayload.chat.toString(),
+          user: socket.user._id.toString(),
           text: messagePayload.content,
         },
       });
@@ -90,13 +90,14 @@ function initSocketServer(httpServer) {
                         You MUST use them when relevant.
 
                             Past conversation memory:
-                ${memory.map((item) => item.metadata.text).join("\n")}`,
+                ${memory.map(item => item.metadata.text).join("\n")}`,
             },
           ],
         },
       ];
 
-      console.log([...ltm, ...stm]);
+      console.log(ltm[0]);
+      console.log(stm);
 
       const response = await aiService.generateResponse([...ltm, ...stm]);
       console.log("AI response:", response);
@@ -114,8 +115,8 @@ function initSocketServer(httpServer) {
         vectors: responseVectors,
         messageId: uuidv4(),
         metadata: {
-          chat: messagePayload.chat,
-          user: socket.user._id,
+          chat: messagePayload.chat.toString(),
+          user: socket.user._id.toString(),
           text: response,
         },
       });
