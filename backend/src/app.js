@@ -6,23 +6,24 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
 const chatRoutes = require("./routes/chat.routes");
 
-
 const app = express();
 
 /* middlewares */
 // CORS Configuration
-app.use(cors({
-  origin: "laughableai.vercel.app",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(
+  cors({
+    origin: "https://laughableai.vercel.app",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 app.use(express.json());
 app.use(cookieParser());
 
 /* using routes */
-app.use("/api/auth",authRoutes);
-app.use("/api/chat",chatRoutes)
+app.use("/api/auth", authRoutes);
+app.use("/api/chat", chatRoutes);
 
 module.exports = app;
