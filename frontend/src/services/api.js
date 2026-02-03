@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = 'https://laughableai.onrender.com';
+const API_BASE_URL = "https://laughableai.onrender.com";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -11,17 +11,17 @@ const api = axios.create({
 export const authService = {
   register: async (userData) => {
     try {
-      const response = await api.post('/auth/register', userData);
+      const response = await api.post("/api/auth/register", userData);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
     }
   },
-  
+
   login: async (credentials) => {
     try {
-      const response = await api.post('/auth/login', credentials);
-      localStorage.setItem('token', response.data.token);
+      const response = await api.post("/api/auth/login", credentials);
+      localStorage.setItem("token", response.data.token);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -29,11 +29,11 @@ export const authService = {
   },
 
   logout: () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
   },
 
   getToken: () => {
-    return localStorage.getItem('token');
+    return localStorage.getItem("token");
   },
 };
 
@@ -41,8 +41,8 @@ export const authService = {
 export const chatService = {
   createChat: async (chatData) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await api.post('/chat', chatData, {
+      const token = localStorage.getItem("token");
+      const response = await api.post("/api/chat", chatData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,12 +55,16 @@ export const chatService = {
 
   sendMessage: async (chatId, message) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await api.post(`/chat/${chatId}/message`, { message }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const token = localStorage.getItem("token");
+      const response = await api.post(
+        `/api/chat/${chatId}/message`,
+        { message },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -69,8 +73,8 @@ export const chatService = {
 
   getChats: async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await api.get('/chat', {
+      const token = localStorage.getItem("token");
+      const response = await api.get("/api/chat", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

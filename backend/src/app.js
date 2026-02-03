@@ -22,15 +22,6 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-/* Health check endpoint */
-app.get("/api/health", (req, res) => {
-  res.status(200).json({
-    status: "OK",
-    message: "Backend is running",
-    timestamp: new Date().toISOString(),
-  });
-});
-
 /* using routes */
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
