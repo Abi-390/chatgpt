@@ -24,7 +24,7 @@ async function queryMemory({ queryVector, limit = 5, metadata }) {
   const data = await chatgptIndex.query({
     vector: queryVector,
     topK: limit, // means after vector search taking the closest 5 vector points(limit=5) to the search result of the query
-    filter: metadata?metadata:undefined,
+    filter: metadata?metadata:undefined,// befored bugged code: filter: metadata?{metadata}:undefined,
     includeMetadata: true,
   });
   return data.matches;
