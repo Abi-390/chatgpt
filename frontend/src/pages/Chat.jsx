@@ -122,9 +122,26 @@ export default function Chat() {
       setLoading(false);
     } catch (error) {
       console.error("❌ Error sending message:", error);
+
+      // Handle rate limit errors specially
+      let errorText =
+        "Error: " + (error?.message || "Could not get AI response");
+
+      // Check if it's a rate limit error (429)
+      if (error?.response?.status === 429) {
+        errorText =
+          "⏱️ Rate limit hit! I'm getting too many requests. Please wait a moment and try again. The free Google API tier is being... free with me. 😅";
+      } else if (error?.response?.status === 401) {
+        errorText =
+          "🔐 Oops! Authentication failed. You might need to log in again.";
+      } else if (error?.response?.status === 500) {
+        errorText =
+          "😬 Backend error! The Render free tier might be sleeping. Give it a moment and try again!";
+      }
+
       const errorMessage = {
         id: Date.now() + 1,
-        text: "Error: " + (error?.message || "Could not get AI response"),
+        text: errorText,
         sender: "ai",
         timestamp: new Date().toLocaleTimeString([], {
           hour: "2-digit",

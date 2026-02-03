@@ -107,7 +107,33 @@ async function sendMessage(req, res) {
 
     // Generate AI response WITH conversation context
     console.log("🤖 Generating AI response with context...");
-    const aiResponse = await generateResponse(message, conversationHistory);
+    let aiResponse;
+    try {
+      aiResponse = await generateResponse(message, conversationHistory);
+    } catch (apiError) {
+      console.error("❌ Google API Error:", apiError);
+
+      // Handle specific API errors
+      if (apiError.message && apiError.message.includes("429")) {
+        return res.status(429).json({
+          error: "Rate limit exceeded",
+          message:
+            "I'm getting too many requests right now! 😅 Please wait a moment and try again. The free tier Google API is a bit stingy with its quotas. Try again in a few seconds!",
+          retryAfter: 60,
+        });
+      }
+
+      if (apiError.message && apiError.message.includes("401")) {
+        return res.status(401).json({
+          error: "Authentication failed",
+          message:
+            "Oops! My API key might be invalid or expired. 🔑 Please check the backend configuration.",
+        });
+      }
+
+      // Re-throw other errors
+      throw apiError;
+    }
 
     console.log("✅ AI response generated:", aiResponse);
 
@@ -152,9 +178,21 @@ async function sendMessage(req, res) {
     });
   } catch (error) {
     console.error("❌ Error in sendMessage:", error.message);
+    console.error("Stack:", error.stack);
+
+    // Check if it's a 429 rate limit error
+    if (error.message && error.message.includes("429")) {
+      return res.status(429).json({
+        error: "Rate limit exceeded",
+        message:
+          "I'm getting too many requests! 😅 Please wait a moment and try again.",
+        retryAfter: 60,
+      });
+    }
+
     res.status(500).json({
-      error: error.message,
-      details: error.stack,
+      error: error.message || "Unknown error occurred",
+      details: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 }

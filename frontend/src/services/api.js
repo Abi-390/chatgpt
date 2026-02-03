@@ -67,7 +67,10 @@ export const chatService = {
       );
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      // Preserve status code in error for better handling
+      const err = new Error(error.response?.data?.message || error.message);
+      err.response = error.response;
+      throw err;
     }
   },
 
