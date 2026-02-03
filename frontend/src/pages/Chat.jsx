@@ -20,29 +20,7 @@ export default function Chat() {
       navigate("/login");
     }
 
-    // Check backend health on mount
-    const checkBackendHealth = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL || "http://localhost:3000"}/api/chat`,
-          {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
-            timeout: 5000,
-          },
-        ).catch(() => null);
-        if (response) {
-          setBackendStarting(false);
-        }
-      } catch (error) {
-        console.log("Backend still starting...");
-      }
-    };
-
-    const healthCheckInterval = setInterval(checkBackendHealth, 3000);
-    checkBackendHealth();
-
-    // Auto-dismiss after 60 seconds timeout
+    // Auto-dismiss startup message after 60 seconds timeout
     const timeoutTimer = setTimeout(() => {
       setBackendStarting(false);
     }, 60000);
@@ -59,7 +37,6 @@ export default function Chat() {
     }, 1000);
 
     return () => {
-      clearInterval(healthCheckInterval);
       clearInterval(countdownTimer);
       clearTimeout(timeoutTimer);
     };
