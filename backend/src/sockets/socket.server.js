@@ -149,7 +149,7 @@ function initSocketServer(httpServer) {
         content: response,
         role: "model",
       }),
-        await aiService.generateVector(response)
+         aiService.generateVector(response)
      ])
 
       await createMemory({
