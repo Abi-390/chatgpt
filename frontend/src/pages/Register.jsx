@@ -37,7 +37,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      const response = await authService.register({
+      await authService.register({
         username: formData.username,
         email: formData.email,
         password: formData.password,

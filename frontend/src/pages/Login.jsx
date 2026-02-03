@@ -25,7 +25,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await authService.login({
+      await authService.login({
         email: formData.email,
         password: formData.password,
       });
