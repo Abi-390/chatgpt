@@ -2,7 +2,15 @@ const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 
 async function authUser(req, res, next) {
-  const { token } = req.cookies;
+  // Try to get token from Authorization header first, then from cookies
+  let token = null;
+
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.substring(7); // Remove "Bearer " prefix
+  } else {
+    token = req.cookies.token;
+  }
 
   if (!token) {
     return res.status(401).json({
@@ -25,5 +33,4 @@ async function authUser(req, res, next) {
   }
 }
 
-
-module.exports = {authUser};
+module.exports = { authUser };
