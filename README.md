@@ -21,12 +21,14 @@
 ## ✨ Key Features
 
 ### 🤖 AI-Powered Conversations
+
 - **Google Gemini 2.0 Flash** - State-of-the-art LLM for intelligent responses
 - **Conversation History** - Full context awareness across messages
 - **RAG System** - Retrieval-Augmented Generation with vector embeddings (Pinecone)
 - **Contextual Humor** - AI adapts humor based on conversation flow
 
 ### 🎨 User Experience
+
 - **Dark/Light Mode Toggle** - Full theme support with persistent preferences
 - **Real-time Chat** - Instant message delivery and AI responses
 - **Responsive Design** - Mobile, tablet, and desktop optimized
@@ -34,18 +36,21 @@
 - **Loading Indicators** - Visual feedback during API calls
 
 ### 🔐 Security & Authentication
+
 - **JWT Authentication** - Secure token-based session management
 - **Password Hashing** - bcryptjs encryption (10 salt rounds)
 - **Protected Routes** - Client-side route protection
 - **CORS Support** - Secure cross-origin requests
 
 ### 📊 Rate Limiting & Performance
+
 - **API Deduplication** - Prevents duplicate simultaneous requests
 - **Request Validation** - Input sanitization and error handling
 - **Optimized Calls** - Single API call per user message (no wasted quota)
 - **Cold Start Mitigation** - User-friendly backend startup messaging
 
 ### 💾 Data Management
+
 - **MongoDB** - Persistent message storage
 - **Vector Database (Pinecone)** - Semantic search and memory retention
 - **Chat History** - Full conversation preservation
@@ -117,44 +122,49 @@ CHATGPT PROJECT/
 ## 🛠️ Technology Stack
 
 ### Frontend
-| Technology | Purpose | Version |
-|-----------|---------|---------|
-| **React** | UI framework | 18.x |
-| **Vite** | Build tool & dev server | Latest |
-| **Tailwind CSS** | Styling | 3.x |
-| **Axios** | HTTP client | ^1.x |
-| **React Router** | Navigation | ^6.x |
+
+| Technology       | Purpose                 | Version |
+| ---------------- | ----------------------- | ------- |
+| **React**        | UI framework            | 18.x    |
+| **Vite**         | Build tool & dev server | Latest  |
+| **Tailwind CSS** | Styling                 | 3.x     |
+| **Axios**        | HTTP client             | ^1.x    |
+| **React Router** | Navigation              | ^6.x    |
 
 ### Backend
-| Technology | Purpose | Version |
-|-----------|---------|---------|
-| **Node.js** | Runtime | 18+ |
-| **Express** | Web framework | ^5.x |
-| **MongoDB** | Database | Cloud |
-| **Mongoose** | ODM | ^9.x |
-| **JWT** | Authentication | ^9.x |
-| **bcryptjs** | Password hashing | ^3.x |
-| **Socket.IO** | Real-time communication | ^4.x |
+
+| Technology    | Purpose                 | Version |
+| ------------- | ----------------------- | ------- |
+| **Node.js**   | Runtime                 | 18+     |
+| **Express**   | Web framework           | ^5.x    |
+| **MongoDB**   | Database                | Cloud   |
+| **Mongoose**  | ODM                     | ^9.x    |
+| **JWT**       | Authentication          | ^9.x    |
+| **bcryptjs**  | Password hashing        | ^3.x    |
+| **Socket.IO** | Real-time communication | ^4.x    |
 
 ### AI & External Services
-| Service | Purpose |
-|---------|---------|
-| **Google Gemini 2.0 Flash** | LLM for AI responses |
-| **Pinecone** | Vector database for RAG |
-| **MongoDB Atlas** | Cloud database |
+
+| Service                     | Purpose                 |
+| --------------------------- | ----------------------- |
+| **Google Gemini 2.0 Flash** | LLM for AI responses    |
+| **Pinecone**                | Vector database for RAG |
+| **MongoDB Atlas**           | Cloud database          |
 
 ### Deployment
-| Platform | Purpose |
-|----------|---------|
+
+| Platform   | Purpose          |
+| ---------- | ---------------- |
 | **Vercel** | Frontend hosting |
-| **Render** | Backend hosting |
-| **GitHub** | Version control |
+| **Render** | Backend hosting  |
+| **GitHub** | Version control  |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js (v18+)
 - npm or yarn
 - MongoDB URI
@@ -204,12 +214,14 @@ npm run preview
 ## 📡 API Endpoints
 
 ### Authentication
+
 ```
 POST   /api/auth/register    - Register new user
 POST   /api/auth/login       - Login user
 ```
 
 ### Chat
+
 ```
 POST   /api/chat             - Create new chat
 POST   /api/chat/:chatId/message  - Send message & get AI response
@@ -222,24 +234,28 @@ GET    /api/chat/:chatId     - Get chat with messages
 ## 🎯 Core Features Implementation
 
 ### ✅ Dark/Light Theme
+
 - Context API for global theme state
 - localStorage persistence
 - Respects system preferences
 - Toggle button in header
 
 ### ✅ RAG (Retrieval-Augmented Generation)
+
 - Conversation history passed to AI
 - Vector embeddings via Pinecone
 - Semantic search for relevant context
 - Message persistence in MongoDB
 
 ### ✅ Rate Limit Optimization
+
 - Single API call per message (no duplicate requests)
 - Request deduplication per chat
 - Graceful 429 error handling
 - User-friendly error messages
 
 ### ✅ Authentication Flow
+
 1. User registers with first name, last name, email, password
 2. Password hashed with bcryptjs (10 rounds)
 3. JWT token issued on login/register
@@ -247,6 +263,7 @@ GET    /api/chat/:chatId     - Get chat with messages
 5. Protected routes verify token validity
 
 ### ✅ Real-time Chat
+
 - Create new chats dynamically
 - Send messages with full context awareness
 - AI responses based on conversation history
@@ -257,6 +274,7 @@ GET    /api/chat/:chatId     - Get chat with messages
 ## 🔧 Environment Variables
 
 ### Backend (.env)
+
 ```
 MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database
 JWT_SECRET=your-secret-key
@@ -266,6 +284,7 @@ NODE_ENV=production
 ```
 
 ### Frontend (.env)
+
 ```
 VITE_API_URL=https://laughableai.onrender.com
 ```
@@ -275,6 +294,7 @@ VITE_API_URL=https://laughableai.onrender.com
 ## 📊 Database Schemas
 
 ### User Model
+
 ```javascript
 {
   email: String (unique, required),
@@ -287,6 +307,7 @@ VITE_API_URL=https://laughableai.onrender.com
 ```
 
 ### Chat Model
+
 ```javascript
 {
   user: ObjectId (reference to User),
@@ -297,6 +318,7 @@ VITE_API_URL=https://laughableai.onrender.com
 ```
 
 ### Message Model
+
 ```javascript
 {
   chat: ObjectId (reference to Chat),
@@ -312,22 +334,27 @@ VITE_API_URL=https://laughableai.onrender.com
 ## 🐛 Bug Fixes & Optimizations
 
 ### Rate Limit Issue (Fixed)
+
 **Problem**: Getting 429 errors immediately
+
 - Root cause: 3 API calls per message (AI response + 2 vector calls)
 - Missing API key in GoogleGenAI initialization
 
 **Solution**:
+
 - Disabled duplicate vector generation calls
 - Added API key to GoogleGenAI: `apiKey: process.env.GEMINI_API_KEY`
 - Kept RAG functional via conversation history
 - Result: 1 API call per message (3x reduction)
 
 ### Request Deduplication
+
 - In-flight request tracking per chat
 - Prevents simultaneous duplicate requests
 - Returns 429 if request already in progress
 
 ### Socket.IO Handler Disabled
+
 - Removed duplicate socket.io "ai-message" handler
 - Only REST API endpoint processes messages
 - Prevents double API consumption
@@ -370,6 +397,7 @@ VITE_API_URL=https://laughableai.onrender.com
 ## 🚀 Deployment
 
 ### Frontend (Vercel)
+
 ```bash
 # Automatic deployment on push to main
 # Environment: Production
@@ -377,6 +405,7 @@ VITE_API_URL=https://laughableai.onrender.com
 ```
 
 ### Backend (Render)
+
 ```bash
 # Automatic deployment on push to main
 # Environment: Production
@@ -433,28 +462,21 @@ Contributions are welcome! Please follow these steps:
 ## 💡 Future Enhancements
 
 ### Short Term
+
 - Real-time typing indicators
 - Message editing/deletion
 - Chat naming & organization
 - User profile customization
 
 ### Long Term
+
 - Mobile app (React Native)
 - Integration with other AI models
 - Conversation analytics
 - Advanced caching strategies
 - WebSocket optimization
 
----
 
-## 📞 Support & Contact
-
-For issues, questions, or feedback:
-- 🐛 [Report Issues](https://github.com/Abi-390/chatgpt/issues)
-- 💬 [Discussions](https://github.com/Abi-390/chatgpt/discussions)
-- 📧 Email: contact@laughableai.com
-
----
 
 ## 📄 License
 
