@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { chatService, authService } from "../services/api";
+import { ThemeContext } from "../context/ThemeContext";
 
 export default function Chat() {
   const navigate = useNavigate();
+  const { isDark, toggleTheme } = useContext(ThemeContext);
   const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -216,24 +218,53 @@ export default function Chat() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div
+        className={`flex-1 flex flex-col ${isDark ? "bg-gray-900" : "bg-white"}`}
+      >
         {/* Header with Mobile Menu Toggle */}
-        <div className="bg-white border-b border-gray-200 px-4 md:px-8 py-4 shadow-sm flex justify-between items-center">
+        <div
+          className={`${isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"} border-b px-4 md:px-8 py-4 shadow-sm flex justify-between items-center`}
+        >
           <div className="flex-1">
-            <h1 className="text-lg md:text-2xl font-bold text-gray-900">
+            <h1
+              className={`text-lg md:text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}
+            >
               {chatStarted ? "Roasting AI Chat" : "Welcome to Laughable AI"}
             </h1>
-            <p className="text-gray-600 text-xs md:text-sm mt-1">
+            <p
+              className={`text-xs md:text-sm mt-1 ${isDark ? "text-gray-400" : "text-gray-600"}`}
+            >
               {chatStarted
                 ? "Ask me anything and get a hilarious roast! 🤣"
                 : "Start a conversation with the funniest AI on the block"}
             </p>
           </div>
 
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className={`mx-2 p-2 rounded-lg transition duration-200 ${isDark ? "bg-gray-700 hover:bg-gray-600 text-yellow-400" : "bg-gray-200 hover:bg-gray-300 text-gray-800"}`}
+            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {isDark ? (
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l-2.12-2.12a1 1 0 00-1.414 0l-.707.707a1 1 0 001.414 1.414l.707-.707.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 000-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+              </svg>
+            )}
+          </button>
+
           {/* Mobile Menu Button */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden ml-4 p-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
+            className={`md:hidden ml-2 p-2 rounded-lg ${isDark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-200 hover:bg-gray-300"}`}
           >
             <svg
               className="w-6 h-6"
@@ -252,17 +283,25 @@ export default function Chat() {
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-4">
+        <div
+          className={`flex-1 overflow-y-auto p-4 md:p-8 space-y-4 ${isDark ? "bg-gray-900" : "bg-white"}`}
+        >
           {messages.length === 0 && !chatStarted && (
             <div className="h-full flex items-center justify-center">
               <div className="text-center px-4">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div
+                  className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${isDark ? "bg-blue-900" : "bg-blue-100"}`}
+                >
                   <span className="text-3xl">💬</span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+                <h2
+                  className={`text-xl md:text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-gray-900"}`}
+                >
                   Start Your Chat
                 </h2>
-                <p className="text-gray-600 text-sm md:text-base">
+                <p
+                  className={`text-sm md:text-base ${isDark ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Type your message below to begin conversing with the AI
                 </p>
               </div>
@@ -278,12 +317,14 @@ export default function Chat() {
                 className={`max-w-xs md:max-w-md px-4 py-3 rounded-lg text-sm md:text-base ${
                   message.sender === "user"
                     ? "bg-blue-600 text-white rounded-br-none"
-                    : "bg-gray-200 text-gray-900 rounded-bl-none"
+                    : isDark
+                      ? "bg-gray-800 text-white rounded-bl-none"
+                      : "bg-gray-200 text-gray-900 rounded-bl-none"
                 }`}
               >
                 <p className="break-words">{message.text}</p>
                 <p
-                  className={`text-xs mt-1 ${message.sender === "user" ? "text-blue-100" : "text-gray-500"}`}
+                  className={`text-xs mt-1 ${message.sender === "user" ? "text-blue-100" : isDark ? "text-gray-400" : "text-gray-500"}`}
                 >
                   {message.timestamp}
                 </p>
@@ -293,11 +334,19 @@ export default function Chat() {
 
           {loading && (
             <div className="flex justify-start px-2 md:px-0">
-              <div className="bg-gray-200 text-gray-900 px-4 py-3 rounded-lg rounded-bl-none">
+              <div
+                className={`${isDark ? "bg-gray-800 text-white" : "bg-gray-200 text-gray-900"} px-4 py-3 rounded-lg rounded-bl-none`}
+              >
                 <div className="flex space-x-2">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100"></div>
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-200"></div>
+                  <div
+                    className={`w-2 h-2 rounded-full animate-bounce ${isDark ? "bg-gray-400" : "bg-gray-500"}`}
+                  ></div>
+                  <div
+                    className={`w-2 h-2 rounded-full animate-bounce delay-100 ${isDark ? "bg-gray-400" : "bg-gray-500"}`}
+                  ></div>
+                  <div
+                    className={`w-2 h-2 rounded-full animate-bounce delay-200 ${isDark ? "bg-gray-400" : "bg-gray-500"}`}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -307,7 +356,9 @@ export default function Chat() {
         </div>
 
         {/* Input Area */}
-        <div className="bg-white border-t border-gray-200 p-3 md:p-4">
+        <div
+          className={`${isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"} border-t p-3 md:p-4`}
+        >
           <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
             <div className="flex gap-2 md:gap-3">
               <input
@@ -316,7 +367,7 @@ export default function Chat() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your message..."
                 disabled={loading}
-                className="flex-1 px-3 md:px-4 py-2 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100"
+                className={`flex-1 px-3 md:px-4 py-2 md:py-3 text-sm md:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:opacity-50 ${isDark ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "bg-white border-gray-300 text-gray-900"}`}
               />
               <button
                 type="submit"
