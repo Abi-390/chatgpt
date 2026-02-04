@@ -91,7 +91,11 @@ async function sendMessage(req, res) {
 
       console.log(`💭 Using ${conversationHistory.length} messages as context`);
 
-      // Also try vector search for semantic relevance (optional enhancement)
+      // Vector search disabled - generateVector() calls waste Gemini API quota
+      // Each call to generateVector() = 1 Gemini API call consumed
+      // RAG still works via conversation history passed to generateResponse()
+      // TODO: Re-enable when using separate embedding service (Hugging Face, etc.)
+      /*
       if (conversationHistory.length > 0) {
         console.log("🔍 Generating vector embedding for semantic search...");
         try {
@@ -115,6 +119,7 @@ async function sendMessage(req, res) {
           // Continue without vector search - conversation history is still available
         }
       }
+      */
     } catch (historyError) {
       console.warn(
         "⚠️ Error retrieving conversation history:",
@@ -164,7 +169,9 @@ async function sendMessage(req, res) {
 
     console.log("✅ AI message saved:", aiMsg._id);
 
-    // 💾 Store message in vector database for future retrieval (async, non-blocking)
+    // Vector storage disabled - each generateVector() call wastes Gemini API quota
+    // TODO: Re-enable when using separate embedding service
+    /*
     try {
       const userMsgVector = await generateVector(message);
       await createMemory({
@@ -185,6 +192,7 @@ async function sendMessage(req, res) {
       );
       // Non-critical, continue anyway
     }
+    */
 
     res.status(200).json({
       success: true,
