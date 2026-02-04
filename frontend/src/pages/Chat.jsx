@@ -11,35 +11,12 @@ export default function Chat() {
   const [chatStarted, setChatStarted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentChatId, setCurrentChatId] = useState(null);
-  const [backendStarting, setBackendStarting] = useState(true);
-  const [startupTimer, setStartupTimer] = useState(0);
 
   useEffect(() => {
     const token = authService.getToken();
     if (!token) {
       navigate("/login");
     }
-
-    // Auto-dismiss startup message after 60 seconds timeout
-    const timeoutTimer = setTimeout(() => {
-      setBackendStarting(false);
-    }, 60000);
-
-    // Track startup time
-    let seconds = 0;
-    const countdownTimer = setInterval(() => {
-      seconds++;
-      setStartupTimer(seconds);
-      // Stop counting after 60 seconds
-      if (seconds >= 60) {
-        clearInterval(countdownTimer);
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(countdownTimer);
-      clearTimeout(timeoutTimer);
-    };
   }, [navigate]);
 
   useEffect(() => {
@@ -276,54 +253,6 @@ export default function Chat() {
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-4">
-          {/* Backend Startup Warning */}
-          {backendStarting && (
-            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded sticky top-0 z-10 shadow">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-start flex-1">
-                  <div className="flex-shrink-0">
-                    <span className="text-2xl">⏳</span>
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-sm md:text-base font-medium text-yellow-800">
-                      🚀 Backend Server Starting
-                    </h3>
-                    <p className="text-xs md:text-sm text-yellow-700 mt-2">
-                      Our backend server on Render is currently starting. This
-                      may take up to <strong>50 seconds</strong> on the first
-                      request (free tier cold start). Please wait...
-                    </p>
-                    <div className="mt-3 flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div
-                          className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce"
-                          style={{ animationDelay: "0s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce"
-                          style={{ animationDelay: "0.2s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce"
-                          style={{ animationDelay: "0.4s" }}
-                        ></div>
-                      </div>
-                      <span className="text-xs text-yellow-700">
-                        Elapsed: {startupTimer}s / 60s timeout
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setBackendStarting(false)}
-                  className="flex-shrink-0 text-yellow-600 hover:text-yellow-800 font-semibold text-sm"
-                >
-                  Dismiss
-                </button>
-              </div>
-            </div>
-          )}
-
           {messages.length === 0 && !chatStarted && (
             <div className="h-full flex items-center justify-center">
               <div className="text-center px-4">
