@@ -159,7 +159,7 @@ export default function Chat() {
       <div
         className={`${
           sidebarOpen ? "fixed md:relative" : "hidden"
-        } md:flex w-64 h-screen md:h-full flex-col bg-gray-900 text-white transition-all duration-300 z-40`}
+        } md:flex w-64 h-screen md:h-full flex-col ${isDark ? "bg-black" : "bg-gray-900"} text-white transition-all duration-300 z-40`}
       >
         {/* Close Button for Mobile */}
         <div className="md:hidden p-4 flex justify-between items-center border-b border-gray-700">
