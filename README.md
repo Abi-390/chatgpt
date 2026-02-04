@@ -276,7 +276,7 @@ GET    /api/chat/:chatId     - Get chat with messages
 ### Backend (.env)
 
 ```
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+MONGO_URI=your_db_url
 JWT_SECRET=your-secret-key
 GEMINI_API_KEY=AIza...
 PINECONE_API_KEY=pcsk_...
@@ -286,7 +286,7 @@ NODE_ENV=production
 ### Frontend (.env)
 
 ```
-VITE_API_URL=https://laughableai.onrender.com
+VITE_API_URL=your_deployed_api
 ```
 
 ---
@@ -401,7 +401,7 @@ VITE_API_URL=https://laughableai.onrender.com
 ```bash
 # Automatic deployment on push to main
 # Environment: Production
-# URL: https://laughableai.vercel.app
+# URL: ur_deployed_url
 ```
 
 ### Backend (Render)
@@ -409,7 +409,7 @@ VITE_API_URL=https://laughableai.onrender.com
 ```bash
 # Automatic deployment on push to main
 # Environment: Production
-# URL: https://laughableai.onrender.com
+# URL: ur_deployed_url
 # Note: Free tier has 50-minute cold start
 ```
 
