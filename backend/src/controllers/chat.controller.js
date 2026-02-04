@@ -4,6 +4,9 @@ const { generateResponse } = require("../services/ai.service");
 const { createMemory, queryMemory } = require("../services/vector.service");
 const { generateVector } = require("../services/ai.service");
 
+// Track in-flight requests per chat to prevent duplicate API calls
+const inFlightRequests = new Map();
+
 async function createChat(req, res) {
   const { title } = req.body;
 
@@ -27,6 +30,21 @@ async function sendMessage(req, res) {
   try {
     const { message } = req.body;
     const { chatId } = req.params;
+
+    // Prevent duplicate requests for the same chat
+    if (inFlightRequests.has(chatId)) {
+      console.warn(
+        `⚠️ Duplicate request detected for chat ${chatId}. Rejecting.`,
+      );
+      return res.status(429).json({
+        error: "Request already in progress",
+        message: "Please wait for your previous message to finish processing.",
+        retryAfter: 5,
+      });
+    }
+
+    // Mark this chat as having an in-flight request
+    inFlightRequests.set(chatId, true);
 
     console.log("📨 Received message:", message);
     console.log("💬 Chat ID:", chatId);
@@ -176,7 +194,13 @@ async function sendMessage(req, res) {
       aiMessage: aiMsg,
       contextUsed: conversationHistory.length > 0,
     });
+
+    // Clear the in-flight request flag
+    inFlightRequests.delete(chatId);
   } catch (error) {
+    // Clear the in-flight request flag even on error
+    inFlightRequests.delete(chatId);
+
     console.error("❌ Error in sendMessage:", error.message);
     console.error("Stack:", error.stack);
 

@@ -33,138 +33,17 @@ function initSocketServer(httpServer) {
   io.on("connection", (socket) => {
     console.log("New socket connection:", socket.id);
 
+    // Socket.IO handler disabled to prevent duplicate API calls
+    // The REST API endpoint (/api/chat/:chatId/message) is the primary method for sending messages
+    // Using both REST and Socket.IO was causing the Google Gemini API rate limit to be hit twice as fast
+
     socket.on("ai-message", async (messagePayload) => {
-      console.log("Payload message sent to  AI :", messagePayload);
-
-    /* const message = await messageModel.create({
-        chat: messagePayload.chat,
-        user: socket.user._id,
-        content: messagePayload.content,
-        role: "user",
-      });
-
-      const vectors = await aiService.generateVector(messagePayload.content);*/
-
-      const [message,vectors] = await Promise.all([
-        messageModel.create({
-        chat: messagePayload.chat,
-        user: socket.user._id,
-        content: messagePayload.content,
-        role: "user",
-      }),
-
-      aiService.generateVector(messagePayload.content)
-
-      ])
-
-      /*const memory = await queryMemory({
-        queryVector: vectors[0].values,
-        limit: 3,
-        metadata: {
-         
-        },
-      }); */
-
-      const [memory,chatHistory] = await Promise.all([
-         queryMemory({
-        queryVector: vectors[0].values,
-        limit: 3,
-        metadata: {
-         user:socket.user._id
-        },
-      }),
-
-      messageModel
-        .find({
-          chat: messagePayload.chat,
-        })
-        .sort({ createdAt: -1 })
-        .limit(10)
-        .lean()
-
-      ])
-
-      await createMemory({
-        vectors,
-        messageId: uuidv4(),
-        metadata: {
-          chat: messagePayload.chat.toString(),
-          user: socket.user._id.toString(),
-          text: messagePayload.content,
-        },
-      });
-
-      console.log(memory);
-
-      /*const chatHistory = await messageModel
-        .find({
-          chat: messagePayload.chat,
-        })
-        .sort({ createdAt: -1 })
-        .limit(10)
-        .lean();*/
-
-      const stm = chatHistory.reverse().map((item) => {
-        return {
-          role: item.role,
-          parts: [{ text: item.content }],
-        };
-      });
-
-      const ltm = [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `You are an AI assistant with access to long-term memory.
-                        The following messages are IMPORTANT past conversation context.
-                        You MUST use them when relevant.
-
-                            Past conversation memory:
-                ${memory.map(item => item.metadata.text).join("\n")}`,
-            },
-          ],
-        },
-      ];
-
-      console.log(ltm[0]);
-      console.log(stm);
-
-      const response = await aiService.generateResponse([...ltm, ...stm]);
-      console.log("AI response:", response);
-
-     /*const responseMessage = await messageModel.create({
-        chat: messagePayload.chat,
-        user: socket.user._id,
-        content: response,
-        role: "model",
-      });*/
-
-     /* const responseVectors = await aiService.generateVector(response);*/
-
-     const [responseMessage,responseVectors] = await Promise.all([
-        messageModel.create({
-        chat: messagePayload.chat,
-        user: socket.user._id,
-        content: response,
-        role: "model",
-      }),
-         aiService.generateVector(response)
-     ])
-
-      await createMemory({
-        vectors: responseVectors,
-        messageId: uuidv4(),
-        metadata: {
-          chat: messagePayload.chat.toString,
-          user: socket.user._id.toString(),
-          text: response,
-        },
-      });
-
+      console.log(
+        "⚠️ Socket.IO ai-message handler is disabled. Use REST API instead.",
+      );
       socket.emit("ai-response", {
-        content: response,
-        chat: messagePayload.chat,
+        error:
+          "Socket.IO messaging is disabled. Please use the REST API endpoint.",
       });
     });
   });
