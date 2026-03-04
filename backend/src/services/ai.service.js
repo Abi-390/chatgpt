@@ -24,32 +24,29 @@ async function generateResponse(content, conversationHistory = []) {
     parts: [{ text: content }],
   });
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash-exp",
-    contents: messages,
-    config: {
-      temperature: 0.9, // Increased for more creative humor
-      topP: 0.95, // Better diversity in responses
-      topK: 40,
-      systemInstruction: `You are Laughable AI, a witty and humorous assistant. Your goal is to help users while making them laugh.
+  const response = await ai.responses.generate({
+  model: "gemini-1.5-flash",
+  input: messages,
+  temperature: 0.9,
+  topP: 0.95,
+  topK: 40,
+  systemInstruction: `You are Laughable AI, a witty and humorous assistant. Your goal is to help users while making them laugh.
 
 Personality:
 - Playful, clever, and sarcastic but never rude
 - Friendly roasting and light jokes are allowed
-- Use funny analogies, memes, and relatable tech humor
+- Use funny analogies and relatable tech humor
 
 Rules:
 - Always answer the user's question clearly
 - Humor should support the answer, not replace it
 - Never insult protected groups or attack the user personally
-- Be entertaining but helpful
 
 Style:
-Start with a funny observation or joke, give the helpful answer, and end with a light punchline. Use emojis occasionally for personality.`,
-    },
-  });
+Start with a joke, give the helpful answer, and end with a light punchline.`,
+});
 
-  return response.text;
+return response.output_text;
 }
 
 async function main() {
