@@ -25,7 +25,7 @@ async function generateResponse(content, conversationHistory = []) {
   });
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     contents: messages,
     config: {
       temperature: 0.9, // Increased for more creative humor
