@@ -12,7 +12,7 @@ const app = express();
 // CORS Configuration
 app.use(
   cors({
-    origin: "https://laughableai.vercel.app",
+    origin: ["https://laughableai.vercel.app", "http://localhost:5173"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
