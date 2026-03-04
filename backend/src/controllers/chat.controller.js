@@ -27,9 +27,10 @@ async function createChat(req, res) {
 }
 
 async function sendMessage(req, res) {
+  const { chatId } = req.params;
+
   try {
     const { message } = req.body;
-    const { chatId } = req.params;
 
     // Prevent duplicate requests for the same chat
     if (inFlightRequests.has(chatId)) {
@@ -78,7 +79,7 @@ async function sendMessage(req, res) {
       const allMessages = await messageModel
         .find({ chat: chatId })
         .sort({ createdAt: 1 })
-        .limit(20); // Get last 20 messages for context
+        .limit(8); // Reduced from 20 → prevents Gemini token overload
 
       console.log(
         `📚 Found ${allMessages.length} previous messages in chat history`,
@@ -131,13 +132,21 @@ async function sendMessage(req, res) {
     // Generate AI response WITH conversation context
     console.log("🤖 Generating AI response with context...");
     let aiResponse;
+
     try {
+      // Small delay helps stabilize free-tier API limits
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
       aiResponse = await generateResponse(message, conversationHistory);
     } catch (apiError) {
       console.error("❌ Google API Error:", apiError);
 
       // Handle specific API errors
-      if (apiError.message && apiError.message.includes("429")) {
+      if (
+        apiError.status === 429 ||
+        apiError.message?.toLowerCase().includes("quota") ||
+        apiError.message?.toLowerCase().includes("rate")
+      ) {
         return res.status(429).json({
           error: "Rate limit exceeded",
           message:
@@ -156,6 +165,12 @@ async function sendMessage(req, res) {
 
       // Re-throw other errors
       throw apiError;
+    }
+
+    // Fallback response if Gemini fails silently
+    if (!aiResponse) {
+      aiResponse =
+        "Oops 😅 my comedy engine crashed for a second. Try sending that again!";
     }
 
     console.log("✅ AI response generated:", aiResponse);
@@ -202,18 +217,15 @@ async function sendMessage(req, res) {
       aiMessage: aiMsg,
       contextUsed: conversationHistory.length > 0,
     });
-
-    // Clear the in-flight request flag
-    inFlightRequests.delete(chatId);
   } catch (error) {
-    // Clear the in-flight request flag even on error
-    inFlightRequests.delete(chatId);
-
     console.error("❌ Error in sendMessage:", error.message);
     console.error("Stack:", error.stack);
 
-    // Check if it's a 429 rate limit error
-    if (error.message && error.message.includes("429")) {
+    if (
+      error.status === 429 ||
+      error.message?.toLowerCase().includes("rate") ||
+      error.message?.toLowerCase().includes("quota")
+    ) {
       return res.status(429).json({
         error: "Rate limit exceeded",
         message:
@@ -226,6 +238,9 @@ async function sendMessage(req, res) {
       error: error.message || "Unknown error occurred",
       details: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
+  } finally {
+    // Always clear in-flight lock
+    inFlightRequests.delete(chatId);
   }
 }
 
