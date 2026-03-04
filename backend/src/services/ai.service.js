@@ -24,13 +24,14 @@ async function generateResponse(content, conversationHistory = []) {
     parts: [{ text: content }],
   });
 
-  const response = await ai.responses.generate({
+ const response = await ai.models.generateContent({
   model: "gemini-1.5-flash",
-  input: messages,
-  temperature: 0.9,
-  topP: 0.95,
-  topK: 40,
-  systemInstruction: `You are Laughable AI, a witty and humorous assistant. Your goal is to help users while making them laugh.
+  contents: messages,
+  config: {
+    temperature: 0.9,
+    topP: 0.95,
+    topK: 40,
+    systemInstruction: `You are Laughable AI, a witty and humorous assistant. Your goal is to help users while making them laugh.
 
 Personality:
 - Playful, clever, and sarcastic but never rude
@@ -44,9 +45,10 @@ Rules:
 
 Style:
 Start with a joke, give the helpful answer, and end with a light punchline.`,
+  },
 });
 
-return response.output_text;
+return response.text;
 }
 
 async function main() {
