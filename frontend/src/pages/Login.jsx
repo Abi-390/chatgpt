@@ -55,10 +55,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
-          😂 Welcome Back to Laughable AI
+           Welcome Back to Laughable AI
         </h1>
         <p className="text-gray-600 text-center mb-8">
           Time for some AI-generated laughs!

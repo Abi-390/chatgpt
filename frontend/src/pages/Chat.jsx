@@ -195,7 +195,7 @@ export default function Chat() {
           onClick={handleNewChat}
           className="m-4 p-3 bg-yellow-500 hover:bg-yellow-600 rounded-lg font-semibold transition duration-200 flex items-center justify-center gap-2 text-gray-900"
         >
-          <span>🤣</span> Start Roasting
+          <span>🎈</span> Start Roasting
         </button>
 
         <div className="flex-1 overflow-y-auto p-4">
