@@ -22,7 +22,7 @@
 
 ### 🤖 AI-Powered Conversations
 
-- **Google Gemini 2.0 Flash** - State-of-the-art LLM for intelligent responses
+- **Google gemini-3-flash-preview** - State-of-the-art LLM for intelligent responses
 - **Conversation History** - Full context awareness across messages
 - **RAG System** - Retrieval-Augmented Generation with vector embeddings (Pinecone)
 - **Contextual Humor** - AI adapts humor based on conversation flow
